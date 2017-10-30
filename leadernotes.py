@@ -55,6 +55,7 @@ for item in fetched1:
   url = 'https://api.clashofclans.com/v1/clans/%23' + item[0] + '/members'
   r = requests.get(url, headers=headers)
   data = r.json()
+  webhookUrl = 'https://discordapp.com/api/webhooks/...'
   try:
     for member in data['items']:
       if member['tag'] in banList:
@@ -62,7 +63,6 @@ for item in fetched1:
         if cursor3.rowcount == 0:
           # create payload and send to Discord
           print(member['name'] + ' (' + member['tag'] + ') should not be in ' + item[1] + '. Please check #leader-notes for details.')
-          webhookUrl = 'https://discordapp.com/api/webhooks/...' 
           payload = {
             "content": '<@!' + item[3] + '> ' + member['name'] + ' (' + member['tag'] + ') is in ' + item[1] + '. Please search for `in:leader-notes ' + member['tag'] + '` for details.'
           }
@@ -75,13 +75,12 @@ for item in fetched1:
             if clan[1] == item[0] and clan[0] < 3:
               # create payload and send to Discord
               print(member['name'] + ' (' + member['tag'] + ') should not be in ' + item[1] + '. Please check #leader-notes for details.')
-              bot_url = 'https://discordapp.com/api/webhooks/364947617639170050/4APE1HWbkSvmFPeKf1y193lXulR_DmKMkPplqq1IYXahGeXTe_Opn7kh7$
               payload = {
-                "content": '<@!' + item[3] + '> ' + member['name'] + ' (' + member['tag'] + ') is in ' + item[1] + '. Please search for `$
+                "content": '<@!' + item[3] + '> ' + member['name'] + ' (' + member['tag'] + ') is in ' + item[1] + '. Please search for `in:leader-notes ' + member['tag'] + '` for details.'
               }
-              #r = requests.post(bot_url, json=payload)
-              #cursor2.execute('INSERT INTO rcs_notify VALUES (%s, %s, %s)', (datetime.now().strftime('%m-%d-%Y %H:%M:%S'), item[0], memb$
-              #conn1.commit()
+              r = requests.post(webhookUrl, json=payload)
+              cursor2.execute('INSERT INTO rcs_notify VALUES (%s, %s, %s)', (datetime.now().strftime('%m-%d-%Y %H:%M:%S'), item[0], member['tag'][1:]))
+              conn1.commit()
   except:
     print('Something broke with ' + member)
 
