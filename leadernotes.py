@@ -7,14 +7,14 @@ from datetime import datetime
 
 # SQL Variables
 config = ConfigParser.ConfigParser()
-config.read('/home/pi/rcs/sqlconfig.ini')
-sqlu = config.get('SectionOne','username')
-sqlp = config.get('SectionOne','password')
-sqld = config.get('SectionOne','database')
-sqls = config.get('SectionOne','server')
+config.read('config.ini')
+sqlu = config.get('sql','username')
+sqlp = config.get('sql','password')
+sqld = config.get('sql','database')
+sqls = config.get('sql','server')
 
 # COC Variables
-token = config.get('SectionFour','
+token = config.get('supercell','apiToken')
 
 # Open SQL connection
 conn1=pymssql.connect(sqls, sqlu, sqlp, sqld)
