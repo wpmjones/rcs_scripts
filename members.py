@@ -31,7 +31,7 @@ async def main():
                 player.achievements_dict['Elixir Escapade'].value, player.achievements_dict['Heroic Heist'].value,
                 player.achievements_dict['Friend in Need'].value, player.achievements_dict['Games Champion'].value,
                 player.clan.tag[1:], now)
-        await conn.close()
+    await conn.close()
 
 
 loop = asyncio.get_event_loop()
