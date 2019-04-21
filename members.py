@@ -24,7 +24,7 @@ async def main():
             player_tag, player_name, th_level, trophies, attack_wins, defense_wins, bh_level, vs_trophies,
             clan_role, gold, elixir, dark_elixir, friend_need, clan_games, clan_tag, time_stamp)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)""",
-            get_player_info(tag_list))
+            (p async for p in get_player_info(tag_list)))
     await conn.close()
 
 
