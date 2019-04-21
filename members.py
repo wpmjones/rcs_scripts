@@ -4,7 +4,7 @@ import coc
 from config import settings
 from datetime import datetime
 
-coc_client = coc.Client(settings['supercell']['apiKey'])
+coc_client = coc.Client(settings['supercell']['user'], settings['supercell']['pass'])
 now = datetime.now()
 
 
@@ -13,17 +13,9 @@ async def main():
                                  password=settings['pg']['pass'],
                                  host="localhost",
                                  database=settings['pg']['db'])
-
-    async def get_player_info(tags):
-        for tag in tags:
-            player = await coc_client.get_player(tag)
-            yield (tag, player.name, player.town_hall, player.trophies, player.attack_wins, player.defense_wins,
-                   player.builder_hall, player.versus_trophies, player.role, player._achievements['Gold Grab'].value,
-                   player._achievements['Elixir Escapade'].value, player._achievements['Heroic Heist'].value,
-                   player._achievements['Friend in Need'].value, player._achievements['Games Champion'].value,
-                   player.clan.tag[1:], now)
-    
     clan_tags = await conn.fetch("SELECT clan_tag, clan_name FROM rcs_clans ORDER BY clan_name")
+    # TODO temp fix for http keys issue
+    await asyncio.sleep(2)
     for clan in clan_tags:
         clan = await coc_client.get_clan(f"#{clan['clan_tag']}")
         print(f"Working on {clan.name}")
@@ -36,5 +28,17 @@ async def main():
     await conn.close()
 
 
-asyncio.get_event_loop().run_until_complete(main())
+async def get_player_info(tags):
+    for tag in tags:
+        player = await coc_client.get_player(tag)
+        yield (tag, player.name, player.town_hall, player.trophies, player.attack_wins, player.defense_wins,
+               player.builder_hall, player.versus_trophies, player.role, player._achievements['Gold Grab'].value,
+               player._achievements['Elixir Escapade'].value, player._achievements['Heroic Heist'].value,
+               player._achievements['Friend in Need'].value, player._achievements['Games Champion'].value,
+               player.clan.tag[1:], now)
+
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())
 print(f"Started at {now} and finished at {datetime.now()}")
+loop.close()
